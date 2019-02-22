@@ -5,21 +5,25 @@ const app = express()
 const path = require('path')
 
 app.use(express.static(__dirname))
+const webpack = require('webpack');
+const config = require('./webpack.config');
+const compiler = webpack(config);
+app.use(require('webpack-dev-middleware')(compiler, {
+    noInfo: true,
+    publicPath: config.output.publicPath
+}));
+app.use(require('webpack-hot-middleware')(compiler));
+
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 })
-app.listen(3000, function () {
-    console.log('listening on port 3000')
+
+app.get('/about',function(req,res){
+    res.send('birds ')
+})
+let port = 3000
+app.listen(port, function () {
+    console.log('listening on port '+port)
 })
 
-var WebSocket = require('ws')
-var wss = new WebSocket.Server({port:8080})
-wss.on('connection',function connection(ws){
-    console.log('server: receive connection.')
-    ws.on('message',function incoming(message){
-        console.log('server: received: %s',message)
-    })
-    ws.send('world')
-})
-app.listen(3000)
