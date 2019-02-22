@@ -25,6 +25,7 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg)$/,
+                exclude: /node_modules/,
                 use: 'url-loader?limit=8192'
             }
         ]
