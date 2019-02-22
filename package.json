@@ -1,0 +1,29 @@
+{
+  "name": "react-chatonline",
+  "version": "1.0.0",
+  "description": "react hooks websocket socket.io chat-online",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caoxinhui/react-chatonline.git"
+  },
+  "keywords": [
+    "hooks",
+    "chat",
+    "online"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caoxinhui/react-chatonline/issues"
+  },
+  "homepage": "https://github.com/caoxinhui/react-chatonline#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "path": "^0.12.7",
+    "react": "^16.8.2"
+  }
+}
