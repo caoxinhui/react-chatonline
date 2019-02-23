@@ -1,6 +1,8 @@
-let express = require('express')
+const express = require('express')
 
 const app = express()
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
 
 const path = require('path')
 
@@ -19,11 +21,19 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 })
 
-app.get('/about',function(req,res){
-    res.send('birds ')
+io.on('connection',function(socket){
+    console.log('a user connected')
+    socket.on('disconnected',function(){
+        console.log('user disconnected')
+    });
+    socket.on('chat message',function(msg){
+        io.emit('some event','i am from server')
+        console.log('message: '+msg )
+    })
 })
+
 let port = 3000
-app.listen(port, function () {
+http.listen(port, function () {
     console.log('listening on port '+port)
 })
 
