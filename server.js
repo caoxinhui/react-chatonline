@@ -21,16 +21,16 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 })
 
-io.on('connection',function(socket){
-    console.log('a user connected')
-    socket.on('disconnected',function(){
-        console.log('user disconnected')
-    });
-    socket.on('chat message',function(msg){
-        io.emit('some event','i am from server')
-        console.log('message: '+msg )
-    })
-})
+// io.on('connection',function(socket){
+//     console.log('a user connected')
+//     socket.on('disconnected',function(){
+//         console.log('user disconnected')
+//     });
+//     socket.on('chat message',function(msg){
+//         io.emit('some event',msg)
+//         console.log('message: '+msg )
+//     })
+// })
 
 let port = 3000
 http.listen(port, function () {
