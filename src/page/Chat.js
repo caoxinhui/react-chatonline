@@ -2,10 +2,19 @@ import React,{ Component } from "react";
 class Chat extends Component {
   constructor(props){
     super(props)
+    this.generateTime = this.generateTime.bind(this)
   }
+  generateTime(){
+    const now = new Date()
+    const hour = now.getHours()
+    const minute = now.getMinutes()
+    hour = hour === 0 ? '00' : hour
+    minute = minute < 10 ? '0'+minute:minute
+    return hour + ':' + minute
+   }
   render(){
     const { username } = this.props
-    console.log(username)
+    const time = this.generateTime()
     return (
       <div>
         <div class="chat-room">
@@ -21,7 +30,7 @@ class Chat extends Component {
           <div>
             <div class="messages">
               <div class="one-message system-message">
-                ddd 进入了聊天室 <span class="time">&nbsp;21:10</span>
+                {username} 进入了聊天室 <span class="time">&nbsp; ${Hour}</span>
               </div>
               <div class="me one-message">
                 <p class="time">
