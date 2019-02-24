@@ -3,11 +3,24 @@ class Chat extends Component {
   constructor(props) {
     super(props);
     this.generateTime = this.generateTime.bind(this);
-    this.getOnlineList = this.getOnlineList.bind(this)
-    this.state = { onlineUser: [], onlineCount: '', onlineUserNames: '' };
+    this.getOnlineList = this.getOnlineList.bind(this);
+    this.handleSubmitChat = this.handleSubmitChat.bind(this);
+    this.listen = this.listen.bind(this)
+    this.state = {
+      onlineUser: [],
+      onlineCount: "",
+      onlineUserNames: "",
+      msgType: "",
+      messages: [],
+      sendMessage: ""
+    };
   }
-  componentDidMount(){
-    this.getOnlineList()
+  componentDidMount() {
+    this.getOnlineList();
+    this.listen()
+  }
+  componentWillReceiveProps(){
+    let { socket } = this.props;
   }
   generateTime() {
     const now = new Date();
@@ -17,10 +30,24 @@ class Chat extends Component {
     minute = minute < 10 ? "0" + minute : minute;
     return hour + ":" + minute;
   }
+  listen(){
+    let { socket } = this.props;
+    let { messages } = this.state;
+    socket.on('sendChatMessage',obj=>{
+      let message = {
+        msgType: "chat",
+        username: obj.username,
+        uid: obj.uid,
+        time: obj.time
+      };
+      messages.push(message)
+    })
+    console.log(messages)
+  }
   getOnlineList() {
     let { socket } = this.props;
     let { onlineUserNames, onlineCount } = this.state;
-    socket.on("login", (obj) => {
+    socket.on("login", obj => {
       onlineCount = obj.onlineCount;
       onlineUserNames = Object.values(obj.onlineUser).join(",");
       this.setState({
@@ -29,58 +56,73 @@ class Chat extends Component {
       });
     });
   }
+  setMessages() {
+    let { socket, username, uid } = this.props;
+    let { messages } = this.state;
+    let time = this.generateTime();
+    socket.on("login", obj => {
+      let message = {
+        msgType: "login",
+        username: username,
+        uid: uid,
+        time: time
+      };
+      messages.push(message);
+    });
+  }
+  setMessage(value) {
+    let { username, uid } = this.props;
+    this.setState({ sendMessage: value, username: username, uid: uid });
+  }
+  handleSubmitChat() {
+    let { socket, username, uid,time } = this.props;
+    let { sendMessage } = this.state;
+    socket.emit("sendChatMessage", {
+      sendMessage: sendMessage,
+      username: username,
+      uid:uid,
+      time:time
+    });
+  }
   render() {
     const { username } = this.props;
-    const { onlineCount, onlineUserNames } = this.state
+    const { onlineCount, onlineUserNames, messages } = this.state;
     const time = this.generateTime();
     return (
       <div>
-        <div class="chat-room">
-          <div class="welcome">
-            <div class="room-action">
-              <div class="room-name">
+        <div className="chat-room">
+          <div className="welcome">
+            <div className="room-action">
+              <div className="room-name">
                 {username}
-                ，欢迎进入群聊哦~{" "}
+                ，欢迎进入群聊哦~
               </div>
-              <div class="button">
+              <div className="button">
                 <button>登出</button>
               </div>
             </div>
           </div>
-          <div class="room-status">在线人数: {onlineCount}, 在线列表: {onlineUserNames}</div>
+          <div className="room-status">
+            在线人数: {onlineCount}, 在线列表: {onlineUserNames}
+          </div>
           <div>
-            <div class="messages">
-              <div class="one-message system-message">
-                {username} 进入了聊天室 <span class="time">&nbsp; {time}</span>
-              </div>
-              {/* <div class="me one-message">
-                <p class="time">
-                  <span>ddd </span> 21:10
-                </p>
-                <div class="message-content">ddd</div>
-              </div> */}
-              {/* <div class="one-message system-message">
-                ddd 进入了聊天室 <span class="time">&nbsp;21:10</span>
-              </div>
-              <div class="other one-message">
-                <p class="time">
-                  <span>ddd</span> 21:10
-                </p>
-                <div class="message-content">aaaaaa</div>
-              </div> */}
+            <div className="messages">
+              <Messages messages={messages} />
             </div>
-            <div class="bottom-area">
-              <div class="input-box">
-                <div class="input">
+            <div className="bottom-area">
+              <div className="input-box">
+                <div className="input">
                   <input
                     type="text"
                     maxlength="140"
                     placeholder="按回车提交"
-                    value=""
+                    onChange={e => this.setMessage(e.target.value)}
                   />
                 </div>
-                <div class="button">
-                  <button type="button">提交</button>
+                <div className="button">
+                  <button type="button" onClick={this.handleSubmitChat}>
+                    提交
+                  </button>
                 </div>
               </div>
             </div>
@@ -91,3 +133,36 @@ class Chat extends Component {
   }
 }
 export default Chat;
+
+const Messages = props => {
+  let { messages } = props;
+  return messages.map((message, index) => {
+    <Message
+      key={index}
+      msgType={message.msgType}
+      isMe={message.isMe}
+      username={message.username}
+      time={message.time}
+      message={message.message}
+    />;
+  });
+};
+const Message = props => {
+  if (props.msgType === "login") {
+    return (
+      <div className="one-message system-message">
+        {props.username} 进入了聊天室
+        <span className="time">&nbsp; {props.time}</span>
+      </div>
+    );
+  } else {
+    return (
+      <div className={props.isMe ? "me one-message" : "other one-message"}>
+        <p className="time">
+          <span>{props.username} </span> {props.time}
+        </p>
+        <div className="message-content">{props.message}</div>
+      </div>
+    );
+  }
+};

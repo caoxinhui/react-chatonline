@@ -37,9 +37,10 @@ io.on('connection', function (socket) {
             onlineCount: onlineCount
         })
     })
-    socket.on('chat message', function (msg) {
-        io.emit('some event', msg)
-        console.log('message: ' + msg)
+
+    socket.on("sendChatMessage", function (obj) {
+        io.emit('sendChatMessage', obj)
+        console.log(obj.username + '说：' + obj.sendMessage)
     })
 
     socket.on('disconnected', function () {
