@@ -20,20 +20,34 @@ app.use(require('webpack-hot-middleware')(compiler));
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 })
+// 在线用户
+let onlineUser = {}
 
-// io.on('connection',function(socket){
-//     console.log('a user connected')
-//     socket.on('disconnected',function(){
-//         console.log('user disconnected')
-//     });
-//     socket.on('chat message',function(msg){
-//         io.emit('some event',msg)
-//         console.log('message: '+msg )
-//     })
-// })
+// 在线用户人数
+let onlineCount = 0
+
+io.on('connection', function (socket) {
+    socket.on('login', function (obj) {
+        if (!onlineUser.hasOwnProperty(obj.uid)) {
+            onlineUser[obj.uid] = obj.username
+            onlineCount++;
+        }
+        io.emit('login', {
+            onlineUser: onlineUser,
+            onlineCount: onlineCount
+        })
+    })
+    socket.on('chat message', function (msg) {
+        io.emit('some event', msg)
+        console.log('message: ' + msg)
+    })
+
+    socket.on('disconnected', function () {
+        console.log('user disconnected')
+    });
+})
 
 let port = 3000
 http.listen(port, function () {
-    console.log('listening on port '+port)
+    console.log('listening on port ' + port)
 })
-

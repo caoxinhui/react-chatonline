@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import Login from "./Login";
 import Chat from "./Chat";
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { uid: "", socket: io(), username:'' };
-    this.handleClick = this.handleClick.bind(this);
+    this.state = { uid: "", socket: io(), username: "" };
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.geterateUid = this.generateUid.bind(this);
   }
   generateUid() {
@@ -14,16 +13,17 @@ class App extends Component {
   setUserName(value) {
     this.setState({ name: value });
   }
-  handleClick() {
-    const { name } = this.state;
+  handleSubmit() {
+    const { name, socket } = this.state;
     const uid = this.geterateUid();
-    let username = !!name ? name : `游客${uid}`;
+    const username = !!name ? name : `游客${uid}`;
     this.setState({ uid: uid, username: username });
+    socket.emit("login", { uid: uid, username: username });
   }
   render() {
-    const { uid,username } = this.state;
+    const { uid, username,socket } = this.state;
     return this.state.uid ? (
-      <Chat uid={uid} username={username}/>
+      <Chat uid={uid} username={username} socket={socket}/>
     ) : (
       <div>
         <div class="login-box">
@@ -36,7 +36,7 @@ class App extends Component {
             />
           </div>
           <div class="submit">
-            <button type="button" onClick={this.handleClick}>
+            <button type="button" onClick={this.handleSubmit}>
               提交
             </button>
           </div>
