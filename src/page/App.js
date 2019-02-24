@@ -7,6 +7,23 @@ class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.geterateUid = this.generateUid.bind(this);
   }
+  componentDidMount() {
+    // this.ready()
+  }
+  ready(){
+    let { socket,uid } = this.state
+    socket.on('logout',obj=>{
+      let message= {
+        msgType: "logout",
+        username: obj.user.username,
+        uid: obj.user.uid,
+      }
+      if(message.uid === uid) {
+        this.setState({uid:null})
+        console.log(uid)
+      }
+    })
+  }
   generateUid() {
     return new Date().getTime() + "" + Math.floor(Math.random() * 999 + 1);
   }
@@ -22,7 +39,8 @@ class App extends Component {
   }
   render() {
     const { uid, username,socket } = this.state;
-    return this.state.uid ? (
+    console.log(uid)
+    return !!this.state.uid ? (
       <Chat uid={uid} username={username} socket={socket}/>
     ) : (
       <div>

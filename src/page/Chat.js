@@ -33,6 +33,15 @@ class Chat extends Component {
       messages.push(message)
       this.setState({messages:messages})
     })
+    socket.on('logout',obj=>{
+      let message= {
+        msgType: "logout",
+        username: obj.user.username,
+        uid: obj.user.uid,
+      }
+      messages.push(message)
+      this.setState({messages:messages,onlineUser:obj.onlineUser,onlineCount:obj.onlineCount})
+    })
   }
   
   generateTime() {
@@ -78,7 +87,7 @@ class Chat extends Component {
     document.getElementById('inputText').value=''
   }
   handleLogout(){
-    let { socket, username, uid,time } = this.props;
+    let { socket, username, uid } = this.props;
     socket.emit('logout',{
       username:username,
       uid:uid
