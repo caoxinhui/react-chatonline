@@ -5,6 +5,7 @@ class Chat extends Component {
     this.generateTime = this.generateTime.bind(this);
     this.getOnlineList = this.getOnlineList.bind(this);
     this.handleSubmitChat = this.handleSubmitChat.bind(this);
+    this.handleLogout = this.handleLogout.bind(this)
     this.state = {
       onlineUser: [],
       onlineCount: "",
@@ -77,8 +78,8 @@ class Chat extends Component {
     document.getElementById('inputText').value=''
   }
   handleLogout(){
-    let { socket, username, uid,time } = props;
-    socket.emit('disconnect',{
+    let { socket, username, uid,time } = this.props;
+    socket.emit('logout',{
       username:username,
       uid:uid
     })
