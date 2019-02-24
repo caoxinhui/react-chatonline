@@ -28,13 +28,16 @@ let onlineCount = 0
 
 io.on('connection', function (socket) {
     socket.on('login', function (obj) {
+        socket.id = obj.uid
         if (!onlineUser.hasOwnProperty(obj.uid)) {
             onlineUser[obj.uid] = obj.username
             onlineCount++;
+            console.log(obj.username + ' 进入聊天室')
         }
         io.emit('login', {
             onlineUser: onlineUser,
-            onlineCount: onlineCount
+            onlineCount: onlineCount,
+            username: obj.username
         })
     })
 
@@ -43,7 +46,14 @@ io.on('connection', function (socket) {
         console.log(obj.username + '说：' + obj.sendMessage)
     })
 
-    socket.on('disconnected', function () {
+    socket.on('disconnect', function () {
+        if(onlineUser.hasOwnProperty(socket.id)){
+            const obj = {uid:socket.id,username:onlineUser[socket.id]}
+            delete onlineUser[socket.id]
+            onlineCount--
+            io.emit('logout',{onlineUser:onlineUser,onlineCount:onlineCount,user:obj})
+            console.log(obj.username + ' 退出了群聊')
+        }
         console.log('user disconnected')
     });
 })

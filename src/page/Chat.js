@@ -5,7 +5,6 @@ class Chat extends Component {
     this.generateTime = this.generateTime.bind(this);
     this.getOnlineList = this.getOnlineList.bind(this);
     this.handleSubmitChat = this.handleSubmitChat.bind(this);
-    this.listen = this.listen.bind(this)
     this.state = {
       onlineUser: [],
       onlineCount: "",
@@ -17,11 +16,24 @@ class Chat extends Component {
   }
   componentDidMount() {
     this.getOnlineList();
-    this.listen()
+    this.ready()
   }
-  componentWillReceiveProps(){
+  ready(){
     let { socket } = this.props;
+    let { messages } = this.state
+    socket.on('sendChatMessage',obj=>{
+      let message = {
+        msgType: "chat",
+        username: obj.username,
+        uid: obj.uid,
+        time: obj.time,
+        sendMessage:obj.sendMessage
+      };
+      messages.push(message)
+      this.setState({messages:messages})
+    })
   }
+  
   generateTime() {
     const now = new Date();
     let hour = now.getHours();
@@ -30,44 +42,23 @@ class Chat extends Component {
     minute = minute < 10 ? "0" + minute : minute;
     return hour + ":" + minute;
   }
-  listen(){
-    let { socket } = this.props;
-    let { messages } = this.state;
-    socket.on('sendChatMessage',obj=>{
-      let message = {
-        msgType: "chat",
-        username: obj.username,
-        uid: obj.uid,
-        time: obj.time
-      };
-      messages.push(message)
-    })
-    console.log(messages)
-  }
   getOnlineList() {
     let { socket } = this.props;
-    let { onlineUserNames, onlineCount } = this.state;
+    let { onlineUserNames, onlineCount,messages } = this.state;
     socket.on("login", obj => {
       onlineCount = obj.onlineCount;
       onlineUserNames = Object.values(obj.onlineUser).join(",");
       this.setState({
         onlineCount: onlineCount,
-        onlineUserNames: onlineUserNames
+        onlineUserNames: onlineUserNames,
+        username:obj.username
       });
-    });
-  }
-  setMessages() {
-    let { socket, username, uid } = this.props;
-    let { messages } = this.state;
-    let time = this.generateTime();
-    socket.on("login", obj => {
       let message = {
         msgType: "login",
-        username: username,
-        uid: uid,
-        time: time
-      };
-      messages.push(message);
+        username: obj.username,
+        time: obj.time
+      }
+      messages.push(message)
     });
   }
   setMessage(value) {
@@ -83,9 +74,17 @@ class Chat extends Component {
       uid:uid,
       time:time
     });
+    document.getElementById('inputText').value=''
+  }
+  handleLogout(){
+    let { socket, username, uid,time } = props;
+    socket.emit('disconnect',{
+      username:username,
+      uid:uid
+    })
   }
   render() {
-    const { username } = this.props;
+    const { username,uid } = this.props;
     const { onlineCount, onlineUserNames, messages } = this.state;
     const time = this.generateTime();
     return (
@@ -97,8 +96,8 @@ class Chat extends Component {
                 {username}
                 ，欢迎进入群聊哦~
               </div>
-              <div className="button">
-                <button>登出</button>
+              <div className="button" onClick={this.handleLogout}>
+                <button>退出群聊</button>
               </div>
             </div>
           </div>
@@ -106,17 +105,16 @@ class Chat extends Component {
             在线人数: {onlineCount}, 在线列表: {onlineUserNames}
           </div>
           <div>
-            <div className="messages">
-              <Messages messages={messages} />
-            </div>
+              <Messages messages={messages} uid={uid} time={time}/>
             <div className="bottom-area">
               <div className="input-box">
                 <div className="input">
                   <input
                     type="text"
                     maxlength="140"
-                    placeholder="按回车提交"
+                    placeholder=""
                     onChange={e => this.setMessage(e.target.value)}
+                    id="inputText"
                   />
                 </div>
                 <div className="button">
@@ -135,23 +133,29 @@ class Chat extends Component {
 export default Chat;
 
 const Messages = props => {
-  let { messages } = props;
-  return messages.map((message, index) => {
-    <Message
-      key={index}
-      msgType={message.msgType}
-      isMe={message.isMe}
-      username={message.username}
-      time={message.time}
-      message={message.message}
-    />;
-  });
+  let { messages,uid,time } = props;
+  return (
+    <div className="messages">
+      {
+        messages.map((message, index) => {
+          return <Message
+            key={index}
+            msgType={message.msgType}
+            isMe={uid=== message.uid}
+            username={message.username}
+            time={time}
+            message={message.sendMessage}
+          />
+        })
+      }
+    </div>
+  )
 };
 const Message = props => {
-  if (props.msgType === "login") {
+  if (props.msgType === "login" || props.msgType==='logout') {
     return (
       <div className="one-message system-message">
-        {props.username} 进入了聊天室
+        {props.username} {props.msgType==='login'?'加入了群聊':'退出了群聊'}
         <span className="time">&nbsp; {props.time}</span>
       </div>
     );
