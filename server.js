@@ -43,7 +43,7 @@ io.on('connection', function (socket) {
 
     socket.on("sendChatMessage", function (obj) {
         io.emit('sendChatMessage', obj)
-        console.log(obj.username + '说：' + obj.sendMessage)
+        console.log(obj.username + '说 ：' + obj.sendMessage)
     })
 
     socket.on('logout', function () {
