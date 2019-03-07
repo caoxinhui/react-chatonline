@@ -27,6 +27,7 @@ let onlineUser = {}
 let onlineCount = 0
 
 io.on('connection', function (socket) {
+    // obj={uid:xxx.username:xxx}
     socket.on('login', function (obj) {
         socket.id = obj.uid
         if (!onlineUser.hasOwnProperty(obj.uid)) {

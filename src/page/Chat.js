@@ -76,7 +76,7 @@ class Chat extends Component {
     this.setState({ sendMessage: value, username: username, uid: uid });
   }
   handleSubmitChat() {
-    let { socket, username, uid,time } = this.props;
+    let { socket, username, uid } = this.props;
     let { sendMessage } = this.state;
     socket.emit("sendChatMessage", {
       sendMessage: sendMessage,

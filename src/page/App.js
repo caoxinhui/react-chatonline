@@ -3,45 +3,27 @@ import Chat from "./Chat";
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { uid: "", socket: io(), username: "" };
+    this.state = { uid: "", socket: io(), username: "", inputValue: "" };
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.geterateUid = this.generateUid.bind(this);
-  }
-  componentDidMount() {
-    // this.ready()
-  }
-  ready(){
-    let { socket,uid } = this.state
-    socket.on('logout',obj=>{
-      let message= {
-        msgType: "logout",
-        username: obj.user.username,
-        uid: obj.user.uid,
-      }
-      if(message.uid === uid) {
-        this.setState({uid:null})
-        console.log(uid)
-      }
-    })
+    this.generateUid = this.generateUid.bind(this);
   }
   generateUid() {
     return new Date().getTime() + "" + Math.floor(Math.random() * 999 + 1);
   }
   setUserName(value) {
-    this.setState({ name: value });
+    this.setState({ inputValue: value });
   }
   handleSubmit() {
-    const { name, socket } = this.state;
-    const uid = this.geterateUid();
-    const username = !!name ? name : `游客${uid}`;
+    const { inputValue, socket } = this.state;
+    const uid = this.generateUid();
+    const username = !!inputValue ? inputValue : `游客${uid}`;
     this.setState({ uid: uid, username: username });
     socket.emit("login", { uid: uid, username: username });
   }
   render() {
-    const { uid, username,socket } = this.state;
-    console.log(uid)
-    return !!this.state.uid ? (
-      <Chat uid={uid} username={username} socket={socket}/>
+    const { uid, username, socket, inputValue } = this.state;
+    return !!uid ? (
+      <Chat uid={uid} username={username} socket={socket} />
     ) : (
       <div>
         <div class="login-box">
@@ -50,6 +32,7 @@ class App extends Component {
             <input
               type="text"
               placeholder="请输入用户名"
+              value={inputValue}
               onChange={e => this.setUserName(e.target.value)}
             />
           </div>
