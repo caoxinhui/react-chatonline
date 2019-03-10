@@ -53,7 +53,7 @@ io.on('connection', function (socket) {
             delete onlineUser[socket.id]
             onlineCount--
             io.emit('logout',{onlineUser:onlineUser,onlineCount:onlineCount,user:user})
-            console.log(user.username + ' 退出了群聊', '还剩  '+ Object.values(onlineUser))
+            console.log(user.username + ' 退出了群聊')
         }
     });
 })
