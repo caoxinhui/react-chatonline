@@ -97,6 +97,7 @@ class Chat extends Component {
       username: username,
       uid: uid
     });
+    window.location.reload()
   }
   render() {
     const { username, uid } = this.props;
