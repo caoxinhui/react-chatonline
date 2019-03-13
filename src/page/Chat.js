@@ -40,10 +40,12 @@ class Chat extends Component {
         uid: obj.user.uid
       };
       messages.push(message);
+      let onlineUserNames = Object.values(obj.onlineUser).join(",");
       this.setState({
         messages: messages,
         onlineUser: obj.onlineUser,
-        onlineCount: obj.onlineCount
+        onlineCount: obj.onlineCount,
+        onlineUserNames: onlineUserNames,
       });
     });
   }

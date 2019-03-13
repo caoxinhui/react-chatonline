@@ -14,7 +14,6 @@ app.use(require('webpack-dev-middleware')(compiler, {
     noInfo: true,
     publicPath: config.output.publicPath
 }));
-app.use(require('webpack-hot-middleware')(compiler));
 
 
 app.get('/', function (req, res) {
@@ -22,6 +21,7 @@ app.get('/', function (req, res) {
 })
 // 在线用户
 let onlineUser = {}
+// 键值对，键是用户随机生成的id，值是用户自定义的名字
 
 // 在线用户人数
 let onlineCount = 0
@@ -47,18 +47,25 @@ io.on('connection', function (socket) {
         console.log(obj.username + '说：' + obj.sendMessage)
     })
 
-    socket.on('logout', function () {
-        if(onlineUser.hasOwnProperty(socket.id)){
-            const user = {uid:socket.id,username:onlineUser[socket.id]}
-            delete onlineUser[socket.id]
+    socket.on('logout', function (obj) {
+        if (onlineUser.hasOwnProperty(obj.uid)) {
+            const user = {
+                uid: obj.uid,
+                username: onlineUser[obj.uid]
+            }
+            delete onlineUser[obj.uid]
             onlineCount--
-            io.emit('logout',{onlineUser:onlineUser,onlineCount:onlineCount,user:user})
-            console.log(user.username + ' 退出了群聊')
+            io.emit('logout', {
+                onlineUser: onlineUser,
+                onlineCount: onlineCount,
+                user: user
+            })
+            console.log(user.username + ' 退出了群聊 ' + onlineUser)
         }
     });
 })
 
-let port = 3000
+const port = 3000
 http.listen(port, function () {
     console.log('listening on port ' + port)
 })
