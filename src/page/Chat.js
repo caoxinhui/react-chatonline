@@ -111,8 +111,7 @@ class Chat extends Component {
           <div className="welcome">
             <div className="room-action">
               <div className="room-name">
-                {username}
-                ，欢迎进入群聊哦~
+                {username} ，欢迎进入群聊哦~
               </div>
               <div className="button" onClick={this.handleLogout}>
                 <button>退出群聊</button>
