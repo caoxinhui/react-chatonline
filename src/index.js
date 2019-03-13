@@ -1,4 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './page/App'
-ReactDOM.render(<App/>, document.getElementById('app'));
+import { ContextProvider } from '../src/context'
+ReactDOM.render(<ContextProvider><App/></ContextProvider>, document.getElementById('app'));
