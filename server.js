@@ -47,13 +47,20 @@ io.on('connection', function (socket) {
         console.log(obj.username + '说：' + obj.sendMessage)
     })
 
-    socket.on('logout', function () {
-        if(onlineUser.hasOwnProperty(socket.id)){
-            const user = {uid:socket.id,username:onlineUser[socket.id]}
-            delete onlineUser[socket.id]
+    socket.on('logout', function (obj) {
+        if (onlineUser.hasOwnProperty(obj.uid)) {
+            const user = {
+                uid: obj.uid,
+                username: onlineUser[obj.uid]
+            }
+            delete onlineUser[obj.uid]
             onlineCount--
-            io.emit('logout',{onlineUser:onlineUser,onlineCount:onlineCount,user:user})
-            console.log(user.username + ' 退出了群聊', '还剩  '+ Object.values(onlineUser))
+            io.emit('logout', {
+                onlineUser: onlineUser,
+                onlineCount: onlineCount,
+                user: user
+            })
+            console.log(user.username + ' 退出了群聊', '还剩  ' + Object.values(onlineUser))
         }
     });
 })
