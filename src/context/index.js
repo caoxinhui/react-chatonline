@@ -26,7 +26,6 @@ const reducer = (state, action) => {
                 messages: state.messages.concat(action.payload.msg)
             }
         case 'sendMessage':
-        console.log( state.messages.concat(action.payload.msg))
             return {
                 ...state, 
                 username: action.payload.username,
