@@ -1,6 +1,6 @@
 import { Context } from "../context";
 import React, { useContext } from "react";
-import generateTime from './util'
+import { generateTime } from './util'
 const Message = props => {
   const time = generateTime();
   const { state } = useContext(Context);
