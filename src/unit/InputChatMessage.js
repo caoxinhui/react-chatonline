@@ -6,10 +6,13 @@ const InputChatMessage = () => {
   const [sendMessage, updateMessage] = useState('')
   useEffect(() => {
     window.scrollTo(0,0)
+    // const scrollHeight = document.documentElement.scrollHeight
+    // const clientHeight = document.documentElement.clientHeight 
+    // const scrollY = scrollHeight 
+    // window.scrollTo(0, scrollY)
   })
   const handleSubmitChat = () => {
     // 适配移动端不兼容问题。提交按钮的时候自动滚动到头部
-    // window.scrollTo(0,0)
     if(sendMessage.trim().length === 0) {
       alert('输入的内容不能为空')
       return
@@ -25,7 +28,9 @@ const InputChatMessage = () => {
             type="text"
             maxlength="140"
             value={sendMessage}
-            onChange={e => updateMessage(e.target.value)}
+            onChange={e => 
+              updateMessage(e.target.value)
+            }
           />
         </div>
         <div className="button">
