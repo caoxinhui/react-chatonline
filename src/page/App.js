@@ -20,10 +20,16 @@ const Login = () => {
     const uid = generateUid()
     const username = !!inputValue ? inputValue : `游客${uid}`
     socket.emit('login', { uid: uid, username: username })
+    const msg = {
+      msgType: "login",
+      username: username,
+    }
     // 更新保存在context中的uid
-    dispatch({type:'login', payload: {
+    dispatch({type:'userLogin', payload: {
+      //用户登录后生成一个uid，一定要更新，否则不能正常进入到chat页面
       uid: uid,
       username: username,
+      msg: msg
     }})
   }
   const handleKeyPress = (e) => {

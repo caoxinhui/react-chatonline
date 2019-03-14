@@ -42,8 +42,8 @@ io.on('connection', function (socket) {
         })
     })
 
-    socket.on("sendChatMessage", function (obj) {
-        io.emit('sendChatMessage', obj)
+    socket.on("sendMessage", function (obj) {
+        io.emit('sendMessage', obj)
         console.log(obj.username + '说：' + obj.sendMessage)
     })
 
@@ -58,7 +58,7 @@ io.on('connection', function (socket) {
             io.emit('logout', {
                 onlineUser: onlineUser,
                 onlineCount: onlineCount,
-                user: user
+                username: user.username
             })
             console.log(user.username + ' 退出了群聊 ' + onlineUser)
         }

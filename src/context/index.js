@@ -8,14 +8,37 @@ const initialState = {
     uid: '',
     messages: [],
     onlineUser: '',
-    onlineUserCount: 0
+    onlineCount: 0
 }
 const reducer = (state, action) => {
     switch (action.type) {
+        case 'userLogin':
+            return {
+                ...state,
+                uid: action.payload.uid,
+                username: action.payload.username,
+            }
         case 'login':
-            return {...state, ...action.payload}
-        case '':
-            return {}
+            return {
+                ...state, 
+                onlineUser: action.payload.onlineUser,
+                onlineCount: action.payload.onlineCount,
+                messages: state.messages.concat(action.payload.msg)
+            }
+        case 'sendMessage':
+        console.log( state.messages.concat(action.payload.msg))
+            return {
+                ...state, 
+                username: action.payload.username,
+                messages: state.messages.concat(action.payload.msg)
+            }
+        case 'logout':
+            return {
+                ...state, 
+                onlineUser: action.payload.onlineUser,
+                onlineCount: action.payload.onlineCount,
+                logoutUser: action.payload.user
+            }
         default:
             throw new Error()
     }
