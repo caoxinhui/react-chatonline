@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
 import { Context } from '../context'
-import Title from './Title'
-import OnlineInfo from './OnlineInfo'
-import InputChatMessage from './InputChatMessage'
-import Messages from './Messages'
+import Title from '../unit/Title'
+import OnlineInfo from '../unit/OnlineInfo'
+import InputChatMessage from '../unit/InputChatMessage'
+import Messages from '../unit/Messages'
 const Chat = () => {
   const { state, dispatch } = useContext(Context)
   const [init, setInit] = useState(false)

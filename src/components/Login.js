@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Context } from '../context'
-import { generateUid } from './util'
+import { generateUid } from '../unit/util'
 const Login = () => {
     const { state, dispatch } = useContext(Context)
     const { socket } = state
