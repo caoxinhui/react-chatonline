@@ -1,5 +1,5 @@
 import { Context } from '../context'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 const OnlineInfo = () => {
   const { state } = useContext(Context);
   const { onlineCount, onlineUser } = state;

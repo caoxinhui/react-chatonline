@@ -21,7 +21,7 @@ const InputChatMessage = () => {
         <div className="button">
           <button type="button" onClick={handleSubmitChat}>
             发送
-            </button>
+          </button>
         </div>
       </div>
     </div>
