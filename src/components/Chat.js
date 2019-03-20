@@ -39,9 +39,7 @@ const Chat = () => {
     })
   }
   const ready = () => {
-    // ready事件只执行一次。只有初始化chat的时候调用监听事件
     setInit(true)
-    // 监听事件
     socket.on('login',(obj) => {
       updateLogin(obj, 'login')
     })
