@@ -46,7 +46,9 @@ io.on('connection', function (socket) {
         io.emit('sendMessage', obj)
         console.log(obj.username + '说：' + obj.sendMessage)
     })
-
+    socket.on('reconnect', function(data){
+        console.log('reconnecting')
+    })
     socket.on('logout', function (obj) {
         if (onlineUser.hasOwnProperty(obj.uid)) {
             const user = {
