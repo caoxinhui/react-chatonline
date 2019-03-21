@@ -29,7 +29,6 @@ const reducer = (state, action) => {
         case 'sendMessage':
             return {
                 ...state, 
-                username: payload.username,
                 messages: state.messages.concat(payload.msg)
             }
         case 'logout':
@@ -37,7 +36,6 @@ const reducer = (state, action) => {
                 ...state, 
                 onlineUser: payload.onlineUser,
                 onlineCount: payload.onlineCount,
-                logoutUser: payload.user,
                 messages: state.messages.concat(payload.msg)
             }
         default:
