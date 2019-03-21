@@ -37,7 +37,8 @@ const reducer = (state, action) => {
                 ...state, 
                 onlineUser: payload.onlineUser,
                 onlineCount: payload.onlineCount,
-                logoutUser: payload.user
+                logoutUser: payload.user,
+                messages: state.messages.concat(payload.msg)
             }
         default:
             throw new Error()
