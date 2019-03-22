@@ -39,7 +39,7 @@ const reducer = (state, action) => {
                 messages: state.messages.concat(payload.msg)
             }
         default:
-            throw new Error()
+            return state
     }
 }
 const Context = createContext()

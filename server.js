@@ -64,7 +64,7 @@ io.on('connection', function (socket) {
     });
 })
 
-const port = 3000
+const port = 5389
 http.listen(port, function () {
     console.log('listening on port ' + port)
 })
